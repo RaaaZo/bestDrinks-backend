@@ -24,6 +24,8 @@ const getUser = async (req, res, next) => {
 const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
 
+  const lowerCaseEmail = email.toLowerCase();
+
   let existingUser;
   try {
     existingUser = await User.findOne({ email: email });
@@ -44,7 +46,7 @@ const signup = async (req, res, next) => {
 
   const createdUser = new User({
     name,
-    email,
+    email: lowerCaseEmail,
     password,
     drinks: [],
     favourites: [],
@@ -64,10 +66,12 @@ const signup = async (req, res, next) => {
 const login = async (req, res, next) => {
   const { email, password } = req.body;
 
+  const lowerCaseEmail = email.toLowerCase();
+
   let existingUser;
 
   try {
-    existingUser = await User.findOne({ email: email });
+    existingUser = await User.findOne({ email: lowerCaseEmail });
   } catch (err) {
     const error = new HttpError(
       "Logowanie nie powiodło się, spróbuj ponownie później.",
